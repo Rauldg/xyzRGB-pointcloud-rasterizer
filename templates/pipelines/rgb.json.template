@@ -1,35 +1,35 @@
 {
     "pipeline": [
         {
-            "filename": "tmp/pointcloud.laz"
+            "filename": "{TMP_DIR}/pointcloud.laz"
         },
         {
-            "filename": "tmp/red.tif",
+            "filename": "{TMP_DIR}/red.tif",
             "dimension": "Red",
-            "output_type": "mean",
-            "resolution": 0.05,
+            "output_type": "{OUTPUT_TYPE}",
+            "resolution": {RESOLUTION},
             "type": "writers.gdal",
             "tag": "RED"
         },
         {
-            "filename": "tmp/pointcloud.laz"
+            "filename": "{TMP_DIR}/pointcloud.laz"
         },
         {
-            "filename": "tmp/green.tif",
+            "filename": "{TMP_DIR}/green.tif",
             "dimension": "Green",
-            "output_type": "mean",
-            "resolution": 0.05,
+            "output_type": "{OUTPUT_TYPE}",
+            "resolution": {RESOLUTION},
             "type": "writers.gdal",
             "tag": "GREEN"
         },
         {
-            "filename": "tmp/pointcloud.laz"
+            "filename": "{TMP_DIR}/pointcloud.laz"
         },
         {
-            "filename": "tmp/blue.tif",
+            "filename": "{TMP_DIR}/blue.tif",
             "dimension": "Blue",
-            "output_type": "mean",
-            "resolution": 0.05,
+            "output_type": "{OUTPUT_TYPE}",
+            "resolution": {RESOLUTION},
             "type": "writers.gdal",
             "tag": "BLUE"
         },

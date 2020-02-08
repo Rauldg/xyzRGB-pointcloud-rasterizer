@@ -1,0 +1,14 @@
+{
+    "pipeline": [
+        {
+            "filename": "tmp/pointcloud.laz"
+        },
+        {
+            "filename": "tmp/dtm.tif",
+            "gdaldriver": "GTiff",
+            "output_type": "mean",
+            "resolution": 0.05,
+            "type": "writers.gdal"
+        }
+    ]
+}

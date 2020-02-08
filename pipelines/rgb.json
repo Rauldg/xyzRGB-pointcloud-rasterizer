@@ -1,0 +1,46 @@
+{
+    "pipeline": [
+        {
+            "filename": "tmp/pointcloud.laz"
+        },
+        {
+            "filename": "tmp/red.tif",
+            "dimension": "Red",
+            "output_type": "mean",
+            "resolution": 0.05,
+            "type": "writers.gdal",
+            "tag": "RED"
+        },
+        {
+            "filename": "tmp/pointcloud.laz"
+        },
+        {
+            "filename": "tmp/green.tif",
+            "dimension": "Green",
+            "output_type": "mean",
+            "resolution": 0.05,
+            "type": "writers.gdal",
+            "tag": "GREEN"
+        },
+        {
+            "filename": "tmp/pointcloud.laz"
+        },
+        {
+            "filename": "tmp/blue.tif",
+            "dimension": "Blue",
+            "output_type": "mean",
+            "resolution": 0.05,
+            "type": "writers.gdal",
+            "tag": "BLUE"
+        },
+        {
+            "type": "filters.merge",
+            "inputs":[
+                "RED",
+                "GREEN",
+                "BLUE"
+            ],
+            "tag": "MERGE"
+        }
+    ]
+}

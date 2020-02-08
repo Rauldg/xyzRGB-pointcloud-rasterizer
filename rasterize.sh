@@ -53,7 +53,7 @@ printf "\nParsing xyzRGB pointcloud file to LAZ...\n"
 txt2las -parse xyzRGB -i $1 -o $DIR_TMP/pointcloud.laz
 
 # Use PDAL to create the GTiff DTM file.
-printf "\nCreating GTiff DTM...\n"
+printf "Creating GTiff DTM...\n"
 pdal pipeline pipelines/dtm.json
 
 # Use GDAL to fetch the size of the DTM.
@@ -100,7 +100,7 @@ gdal_translate -of PNG -ot Byte -scale -b 1 $DIR_TMP/dtm.tif $DIR_OUTPUT/heightm
 
 # Use ImageMagick to rescale canvas size to SIZE_HEIGHT_MAP x SIZE_HEIGHT_MAP pixels.
 printf "Rescaling heightmap canvas to ${SIZE_HEIGHT_MAP}, ${SIZE_HEIGHT_MAP}...\n"
-convert $DIR_OUTPUT/heightmap.png -resize "${SIZE_HEIGHT_MAP}x${SIZE_HEIGHT_MAP}" -background Black -gravity center -extent "${SIZE_HEIGHT_MAP}x${SIZE_HEIGHT_MAP}" heightmap.png
+convert $DIR_OUTPUT/heightmap.png -resize "${SIZE_HEIGHT_MAP}x${SIZE_HEIGHT_MAP}" -background Black -gravity center -extent "${SIZE_HEIGHT_MAP}x${SIZE_HEIGHT_MAP}" $DIR_OUTPUT/heightmap.png
 
 
 ##########################
@@ -122,7 +122,7 @@ gdal_translate -of PNG -ot Byte -scale -b 1 -b 2 -b 3 $DIR_TMP/rgb.tif $DIR_OUTP
 
 # Use ImageMagick to rescale canvas size to SIZE_DIFFUSION_MAP x SIZE_DIFFUSION_MAP pixels.
 printf "Rescaling heightmap canvas to ${SIZE_DIFFUSION_MAP}, ${SIZE_DIFFUSION_MAP}...\n"
-convert $DIR_OUTPUT/diffusion.png -resize "${SIZE_DIFFUSION_MAP}x${SIZE_DIFFUSION_MAP}" -background Black -gravity center -extent "${SIZE_DIFFUSION_MAP}x${SIZE_DIFFUSION_MAP}"  diffusion.png
+convert $DIR_OUTPUT/diffusion.png -resize "${SIZE_DIFFUSION_MAP}x${SIZE_DIFFUSION_MAP}" -background Black -gravity center -extent "${SIZE_DIFFUSION_MAP}x${SIZE_DIFFUSION_MAP}" $DIR_OUTPUT/diffusion.png
 
 
 ###########
@@ -130,4 +130,4 @@ convert $DIR_OUTPUT/diffusion.png -resize "${SIZE_DIFFUSION_MAP}x${SIZE_DIFFUSIO
 ###########
 
 # Delete tmp directory containing all the temporary files created by the script.
-#rm -Rf tmp
+rm -Rf tmp

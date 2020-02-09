@@ -5,12 +5,14 @@
 # Dependencies: None.
 #======================================================================================================
 
+# Delete any temporary files that might have been left over from running rasterize.sh.
 DELETE_TMP_FILES=true
 
 # Define tmp and output directories.
 DIR_TMP=tmp
 DIR_OUTPUT=output
 DIR_TEMPLATES=templates/map
+
 
 #########################
 # READ INPUT PARAMETERS #
@@ -94,10 +96,13 @@ if [ ! -f "$DIR_OUTPUT/$filename/heightmap.png" ] || [ ! -f "$DIR_OUTPUT/$filena
     bash rasterize.sh $size_height_map $size_diffusion_map $pdal_resolution $pdal_output_type $xyz_filename
 fi
 
-# Fetch bounding bbox data stored in json file.
-bbox_json=$(cat "$target_output_dir/bbox.json" | jq .)
 
-# Read bounding bound json and calculate width, height, and depth.
+######################################
+# BOUNDING BOX AND COORDINATE VALUES #
+######################################
+
+# Fetch bounding box data stored in json file and calculate width, height, and depth.
+bbox_json=$(cat "$target_output_dir/bbox.json" | jq .)
 
 # Width.
 maxx=$(echo $bbox_json | jq .maxx)
@@ -128,6 +133,10 @@ fi
 # Calculate tex scale.
 tex_scale=$(bc <<< "scale=10; 1 / $longest_side")
 tex_scale="0$tex_scale"
+
+#################################################
+# CREATE MODEL ENVIRONMENT FILES FROM TEMPLATES #
+#################################################
 
 # Create README from template.
 sed "s/{BOUNDING_BOX_X}/$width/g" "$DIR_TEMPLATES/README.md.template" \

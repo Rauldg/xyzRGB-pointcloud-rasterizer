@@ -222,16 +222,17 @@ gdal_translate -of PNG -ot Byte -scale -b 1 -b 2 -b 3 -outsize $diffusionmap_out
 printf "Rescaling heightmap canvas to ${size_diffusion_map}, ${size_diffusion_map}...\n"
 convert $diffusionmap_filename -resize "${size_diffusion_map}x${size_diffusion_map}" -background Black -gravity center -extent "${size_diffusion_map}x${size_diffusion_map}" $diffusionmap_filename
 
+
 ####################################
 # FETCH AND SAVE BOUNDING BOX DATA #
 ####################################
 
 pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox' > "$target_output_dir/bbox.json"
 
+
 ###########
 # CLEANUP #
 ###########
-
 
 # Delete all the temporary files created by the script.
 if [ $DELETE_TMP_FILES = true ] ; then

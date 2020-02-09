@@ -1,5 +1,5 @@
 nodelist:
-  - name: colmenar
+  - name: {MAP_NAME}
     index: 1
     origname: terrain
     filename: terrain
@@ -38,8 +38,3 @@ materiallist:
      provider: DRockGraph
      vertex: vertex_shader.yml
      fragment: fragment_shader.yml
-
-
-
-
-

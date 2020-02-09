@@ -11,12 +11,13 @@
 ################################
 
 # Flag to indicate if tmp files should be deleted at the end of the script.
-DELETE_TMP_FILES=true
+DELETE_TMP_FILES=false
 
 # Target sizes for height map and diffusion map image file outputs.
 DEFAULT_SIZE_HEIGHT_MAP=512
 DEFAULT_SIZE_DIFFUSION_MAP=4096
 
+# Define tmp and output directories.
 DIR_TMP=tmp
 DIR_OUTPUT=output
 
@@ -100,6 +101,7 @@ if [ ! -d $DIR_OUTPUT ]; then mkdir $DIR_OUTPUT; fi
 filename=$(basename -- "$xyz_filename")
 filename="${filename%.*}"
 
+# Define target directories where created files will be saved.
 target_tmp_dir="$DIR_TMP/$filename"
 target_output_dir="$DIR_OUTPUT/$filename"
 
@@ -220,10 +222,16 @@ gdal_translate -of PNG -ot Byte -scale -b 1 -b 2 -b 3 -outsize $diffusionmap_out
 printf "Rescaling heightmap canvas to ${size_diffusion_map}, ${size_diffusion_map}...\n"
 convert $diffusionmap_filename -resize "${size_diffusion_map}x${size_diffusion_map}" -background Black -gravity center -extent "${size_diffusion_map}x${size_diffusion_map}" $diffusionmap_filename
 
+####################################
+# FETCH AND SAVE BOUNDING BOX DATA #
+####################################
+
+pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox' > "$target_output_dir/bbox.json"
 
 ###########
 # CLEANUP #
 ###########
+
 
 # Delete all the temporary files created by the script.
 if [ $DELETE_TMP_FILES = true ] ; then

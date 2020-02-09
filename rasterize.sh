@@ -56,7 +56,7 @@ done
 # Check if input pointcloud filename was given.
 if [ -z "$xyz_filename" ]
 then
-    printf "\nUse the -i option to input the path to the .xyz file to process. \n\n"
+    printf "\nUse the -i option to input the path to the .xyz file to process.\n\n"
     exit 1
 fi
 

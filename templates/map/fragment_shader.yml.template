@@ -1,0 +1,324 @@
+domain: " "
+name: " "
+type: " "
+versions:
+  - name: " "
+    " Data":
+      data: "gui:\n  layouts:\n    vertex_layout:\n      compose_vec21:\n        y: 1025\n        x: 424\n      fragInfo1:\n        y: 1248\n        x: 550\n      math_mult1:\n        x: 104\n        y: 903\n      mix_vec41:\n        x: 960\n        y: 867\n      stones:\n        x: 960\n        y: 867\n      decompose_vec41:\n        y: 1049\n        x: 268\n      texScale:\n        x: 108\n        y: 487\n      sample2D2:\n        x: 918\n        y: 971\n      positionVarying:\n        y: 619\n        x: 96\n      view:\n        scale: 2.19816\n        x: -2654.05\n        y: -774.438\n      fragOut1:\n        y: 829\n        x: 2229\n      crop_vec21:\n        y: 1186\n        x: 960\n      math_vec21:\n        y: 1022\n        x: 573\n      compose_vec22:\n        x: 235\n        y: 744\n      pixellight_frag1:\n        y: 1200\n        x: 832\n      math_mult2:\n        y: 742\n        x: 77\n      math_vec22:\n        x: 707\n        y: 1015\n    frag_layout:\n      fragOut1:\n        x: 1349\n        y: 1004\n      sample2D2:\n        x: 817\n        y: 934\n      stones:\n        x: 524\n        y: 806\n      fragInfo1:\n        x: 550\n        y: 1248\n      pixellight_frag1:\n        x: 791\n        y: 1317\n      positionVarying:\n        x: -286\n        y: 1063\n      decompose_vec41:\n        x: -160\n        y: 1063\n      compose_vec21:\n        x: 88\n        y: 1103\n      math_vec21:\n        x: 471\n        y: 1014\n      texScale:\n        x: 245\n        y: 727\n      math_vec22:\n        x: 646\n        y: 1012\n      mix_vec41:\n        x: 1077\n        y: 1031\n      crop_vec21:\n        x: 811\n        y: 1059\n      math_mult1:\n        x: 85\n        y: 962\n      compose_vec22:\n        x: 244\n        y: 904\n      math_mult2:\n        x: 84\n        y: 785\n      decompose_vec21:\n        x: -178\n        y: 825\n      terrain_size:\n        x: -369\n        y: 828\n      view:\n        scale: 2.15521\n        x: 71.2097\n        y: -967.766\n  defaultLayout: frag_layout\n"
+    maturity: INPROGRESS
+    date: 2020-02-06T14:38:11
+    components:
+      nodes:
+        - name: fragOut1
+          model:
+            domain: SHADER
+            version: v1
+            name: fragOut
+        - name: sample2D2
+          model:
+            domain: SHADER
+            version: v1
+            name: sample2D
+        - name: stones
+          model:
+            domain: SHADER
+            version: v1
+            name: sampler2D
+        - name: fragInfo1
+          model:
+            domain: SHADER
+            version: v1
+            name: fragInfo
+        - name: pixellight_frag1
+          model:
+            domain: SHADER
+            version: v1
+            name: pixellight_frag
+        - name: positionVarying
+          model:
+            domain: SHADER
+            version: v1
+            name: vec4
+        - name: decompose_vec41
+          model:
+            domain: SHADER
+            version: v1
+            name: decompose_vec4
+        - name: compose_vec21
+          model:
+            domain: SHADER
+            version: v1
+            name: compose_vec2
+        - name: math_vec21
+          model:
+            domain: SHADER
+            version: v1
+            name: math_vec2
+        - name: texScale
+          model:
+            domain: SHADER
+            version: v1
+            name: float
+        - name: math_vec22
+          model:
+            domain: SHADER
+            version: v1
+            name: math_vec2
+        - name: mix_vec41
+          model:
+            domain: SHADER
+            version: v1
+            name: mix_vec4
+        - name: crop_vec21
+          model:
+            domain: SHADER
+            version: v1
+            name: crop_vec2
+        - name: math_mult1
+          model:
+            domain: SHADER
+            version: v1
+            name: math_mult
+        - name: compose_vec22
+          model:
+            domain: SHADER
+            version: v1
+            name: compose_vec2
+        - name: math_mult2
+          model:
+            domain: SHADER
+            version: v1
+            name: math_mult
+        - name: decompose_vec21
+          model:
+            domain: SHADER
+            version: v1
+            name: decompose_vec2
+        - name: terrain_size
+          model:
+            domain: SHADER
+            version: v1
+            name: compose_vec2
+      configuration:
+        nodes:
+          - name: fragOut1
+            data: "{}\n"
+          - name: stones
+            data: "data:\n  type: uniform\n"
+          - name: pixellight_frag1
+            data: "data:\n  inputs:\n    normal: vec3(0, 0,1)\n"
+          - name: positionVarying
+            data: "data:\n  type: varying\n"
+          - name: decompose_vec41
+            data: "inputs:\n  vector: vec4(0,0,0,0)\n"
+          - name: compose_vec21
+            data: "data:\n  inputs:\n    x: 0.0\n    y: 0.0\n"
+          - name: math_vec21
+            data: "data:\n  inputs:\n    vector_b: vec2(0,0)\n"
+          - name: texScale
+            data: "data:\n  type: uniform\n"
+          - name: math_vec22
+            data: "data:\n  inputs:\n    skalar: 1\n    vector_b: vec2(0,0)\n"
+          - name: mix_vec41
+            data: "data:\n  inputs:\n    vector_b: vec4(0,0,0,0)\n"
+          - name: math_mult1
+            data: "data:\n  inputs:\n    value_b: 0.5\n    skalar: 1.0\n    value_a: 0\n"
+          - name: compose_vec22
+            data: "data:\n  inputs:\n    y: 0.0\n    x: 0.0\n"
+          - name: math_mult2
+            data: "data:\n  inputs:\n    value_b: 0.5\n    skalar: 1.0\n    value_a: 0\n"
+          - name: decompose_vec21
+            data: "inputs:\n  vector: vec2(0,0)\n"
+          - name: terrain_size
+            data: "data:\n  inputs:\n    x: {WIDTH}\n    y: {HEIGHT}\n"
+      edges:
+        - from:
+            name: stones
+            interface: output
+            domain: SHADER
+          to:
+            name: sample2D2
+            interface: texture
+            domain: SHADER
+          data: "name: 13\ndecouple: false\ndataType: sampler2D\nignore_for_sort: 0\ndomain: shader\nweight: 1\nsmooth: true\n"
+          name: 13
+        - from:
+            name: fragInfo1
+            interface: ambient
+            domain: SHADER
+          to:
+            name: pixellight_frag1
+            interface: baseColor
+            domain: SHADER
+          data: "name: 26\ndecouple: false\nignore_for_sort: 0\nweight: 1\nsmooth: true\ndomain: shader\ndataType: vec4\n"
+          name: 26
+        - from:
+            name: positionVarying
+            interface: output
+            domain: SHADER
+          to:
+            name: decompose_vec41
+            interface: vector
+            domain: SHADER
+          data: "name: 5\nweight: 1\ndomain: shader\nignore_for_sort: 0\nsmooth: true\ndecouple: false\ndataType: vec4\n"
+          name: 5
+        - from:
+            name: compose_vec21
+            interface: vector
+            domain: SHADER
+          to:
+            name: math_vec21
+            interface: vector_a
+            domain: SHADER
+          data: "name: 8\nweight: 1\ndomain: shader\nignore_for_sort: 0\ndataType: vec2\nsmooth: true\ndecouple: false\n"
+          name: 8
+        - from:
+            name: texScale
+            interface: output
+            domain: SHADER
+          to:
+            name: math_vec21
+            interface: skalar
+            domain: SHADER
+          data: "name: 9\ndataType: float\ndomain: shader\nweight: 1\nsmooth: true\nignore_for_sort: 0\ndecouple: false\n"
+          name: 9
+        - from:
+            name: decompose_vec41
+            interface: y
+            domain: SHADER
+          to:
+            name: compose_vec21
+            interface: y
+            domain: SHADER
+          data: "name: 59\nweight: 1\ndecouple: false\nignore_for_sort: 0\ndataType: float\ndomain: shader\nsmooth: true\n"
+          name: 59
+        - from:
+            name: math_vec21
+            interface: vector
+            domain: SHADER
+          to:
+            name: math_vec22
+            interface: vector_a
+            domain: SHADER
+          data: "name: 11\ndecouple: false\ndomain: shader\nsmooth: true\ndataType: vec2\nweight: 1\nignore_for_sort: 0\n"
+          name: 11
+        - from:
+            name: math_vec22
+            interface: vector
+            domain: SHADER
+          to:
+            name: sample2D2
+            interface: texCoord
+            domain: SHADER
+          data: "name: 12\ndataType: vec2\ndecouple: false\nignore_for_sort: 0\ndomain: shader\nsmooth: true\nweight: 1\n"
+          name: 12
+        - from:
+            name: decompose_vec41
+            interface: x
+            domain: SHADER
+          to:
+            name: compose_vec21
+            interface: x
+            domain: SHADER
+          data: "name: 13\ndataType: float\nsmooth: true\nweight: 1\ndomain: shader\ndecouple: false\nignore_for_sort: 0\n"
+          name: 13
+        - from:
+            name: mix_vec41
+            interface: vector
+            domain: SHADER
+          to:
+            name: fragOut1
+            interface: col
+            domain: SHADER
+          data: "name: 14\nignore_for_sort: 0\nweight: 1\ndecouple: false\nsmooth: true\ndataType: vec4\ndomain: shader\n"
+          name: 14
+        - from:
+            name: sample2D2
+            interface: color
+            domain: SHADER
+          to:
+            name: mix_vec41
+            interface: vector_a
+            domain: SHADER
+          data: "name: 15\ndataType: vec4\nignore_for_sort: 0\nsmooth: true\ndomain: shader\ndecouple: false\nweight: 1\n"
+          name: 15
+        - from:
+            name: math_vec22
+            interface: vector
+            domain: SHADER
+          to:
+            name: crop_vec21
+            interface: vector_a
+            domain: SHADER
+          data: "name: 14\nsmooth: true\ndomain: shader\ndataType: vec2\nweight: 1\nignore_for_sort: 0\ndecouple: false\n"
+          name: 14
+        - from:
+            name: crop_vec21
+            interface: f
+            domain: SHADER
+          to:
+            name: mix_vec41
+            interface: fac
+            domain: SHADER
+          data: "name: 15\ndecouple: false\nignore_for_sort: 0\nweight: 1\ndataType: float\nsmooth: true\ndomain: shader\n"
+          name: 15
+        - from:
+            name: math_mult2
+            interface: value
+            domain: SHADER
+          to:
+            name: compose_vec22
+            interface: y
+            domain: SHADER
+          data: "name: 18\nignore_for_sort: 0\ndataType: float\ndecouple: false\nweight: 1\ndomain: shader\nsmooth: true\n"
+          name: 18
+        - from:
+            name: compose_vec22
+            interface: vector
+            domain: SHADER
+          to:
+            name: math_vec21
+            interface: vector_b
+            domain: SHADER
+          data: "name: 19\ndataType: vec2\ndecouple: false\nweight: 1\nsmooth: true\ndomain: shader\nignore_for_sort: 0\n"
+          name: 19
+        - from:
+            name: math_mult1
+            interface: value
+            domain: SHADER
+          to:
+            name: compose_vec22
+            interface: x
+            domain: SHADER
+          data: "dataType: float\ndomain: shader\nsmooth: true\nweight: 1\ndecouple: false\nignore_for_sort: 0\n"
+          name: 25
+        - from:
+            name: decompose_vec21
+            interface: x
+            domain: SHADER
+          to:
+            name: math_mult1
+            interface: value_a
+            domain: SHADER
+          data: "dataType: float\ndomain: shader\nsmooth: true\nweight: 1\ndecouple: false\nignore_for_sort: 0\n"
+          name: 32
+        - from:
+            name: decompose_vec21
+            interface: y
+            domain: SHADER
+          to:
+            name: math_mult2
+            interface: value_a
+            domain: SHADER
+          data: "dataType: float\ndomain: shader\nsmooth: true\nweight: 1\ndecouple: false\nignore_for_sort: 0\n"
+          name: 33
+        - from:
+            name: terrain_size
+            interface: vector
+            domain: SHADER
+          to:
+            name: decompose_vec21
+            interface: vector
+            domain: SHADER
+          data: "dataType: vec2\ndomain: shader\nsmooth: true\nweight: 1\ndecouple: false\nignore_for_sort: 0\n"
+          name: 35

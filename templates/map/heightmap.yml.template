@@ -1,0 +1,45 @@
+nodelist:
+  - name: colmenar
+    index: 1
+    origname: terrain
+    filename: terrain
+    physicmode: terrain
+    movable: false
+    material_id: 1
+    shadow_id: 1
+    position: {x: 0, y: 0, z: {POSITION_Z}}
+    extend: {x: {WIDTH}, y: {HEIGHT}, z: {SCALE}}
+    t_srcname: heightmap.png
+    t_tex_scale: 0.01
+    t_width: {WIDTH}
+    t_height: {HEIGHT}
+    t_scale: {SCALE}
+    t_grid: ground.bobj
+
+materiallist:
+  - name: terrain
+    id: 1
+    scaleZ: {SCALE}
+    tex_scale: {TEX_SCALE}
+    ambientColor: {a: 1.0, r: 0.8, g: 0.8, b: 0.8}
+    diffuseColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+    specularColor: {a: 1.0, r: 0.2, g: 0.2, b: 0.2}
+    emissionColor: {a: 1.0, r: 0.0, g: 0.0, b: 0.0}
+    shininess: 1.0
+    bumpNorFac: 0.40
+    envMapSpecular: {r: 0.4, g: 0.0, b: 0.0}
+    envMapScale: {r: 450, g: 150, b: 150.0}
+    transparency: 0.0001
+    useWorldTexCoords: true
+    textures:
+      - {file: heightmap.png, name: terrainMap, unit: 3}
+      - {file: diffusionmap.png, name: stones, unit: 5}
+    shader:
+     provider: DRockGraph
+     vertex: vertex_shader.yml
+     fragment: fragment_shader.yml
+
+
+
+
+

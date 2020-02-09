@@ -11,8 +11,10 @@ DIR_OUTPUT=output
 #########################
 # READ INPUT PARAMETERS #
 #########################
-while getopts ":h:d:r:t:i:" opt; do
+while getopts ":n:h:d:r:t:i:" opt; do
   case $opt in
+    n) map_name="$OPTARG"
+    ;;
     h) size_height_map="$OPTARG"
     ;;
     d) size_diffusion_map="$OPTARG"
@@ -28,6 +30,13 @@ while getopts ":h:d:r:t:i:" opt; do
     ;;
   esac
 done
+
+# Check if a model environment name has been set.
+if [ -z "$map_name" ]
+then
+    printf "\nUse the -n option to set the name of the model environment.\n\n"
+    exit 1
+fi
 
 # Get name of xyz file without its extension.
 # Use this name as the directory name where created files will be outputted to.
@@ -74,14 +83,13 @@ fi
 # Check if height and diffisusion map files have already been created.
 # If not, create them by invoking the rasterize.sh bash script.
 if [ ! -f "$DIR_OUTPUT/$filename/heightmap.png" ] || [ ! -f "$DIR_OUTPUT/$filename/diffusion.png" ] ; then
-    printf "\nRasterizing...\n"
     bash rasterize.sh $size_height_map $size_diffusion_map $pdal_resolution $pdal_output_type $xyz_filename
 fi
 
 # TODO, sed template files and output them into new files.
 
-# README.md
-# manifest.xml
-# heightmap.yml
-# Shaders: vertex_shaders.yml and fragment_shader.yml
+# README.md.template
+# manifest.xml.template
+# heightmap.yml.template
+# Shaders: vertex_shaders.yml and fragment_shader.yml.template
 # ground.bobj

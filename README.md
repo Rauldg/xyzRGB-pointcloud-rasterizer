@@ -1,7 +1,14 @@
 # xyzRGB Pointcloud Rasterizer
 This project contains scripts that automate the process of producing height and diffusion maps from a pointcloud file. The scripts were developed for Ubuntu but will most likely work in other Unix-based operating systems. with a few adjustements.
 
-**WARNING:** The scripts can be extremely resource intensive depending on the size of the given pointcloud file. The **rasterize.sh** script is not fully optimized in that it creates temporary *.laz* and *.tif* files with a total size that is approximately double that of the given pointcloud file. Make sure that the necessary disk space is available when processing gigabyte-sized pointcloud files.
+## Resource Intensity
+The scripts can be extremely resource intensive depending on the size of the given pointcloud file.
+
+### Disk Space
+The **rasterize.sh** script is not fully optimized in that it creates temporary *.laz* and *.tif* files with a total size that is approximately double that of the given pointcloud file. Make sure that the necessary disk space is available when processing gigabyte-sized pointcloud files.
+
+### Memory
+The **rasterize.sh** uses [PDAL](https://pdal.io/) which can be resource intensive with memory allocations and result in a malloc error. This can be mitigating against by reducing the target output size of the diffusion map image.
 
 ## Dependencies
 Third party applications are invoked throughout the **rasterize.sh:** bash script. The mentioned versions are those used while the script was developed:
@@ -44,7 +51,7 @@ Regarding the PDAL options:
 
 Read more about PDAL options [here](https://pdal.io/stages/writers.gdal.html#options).
 
-The *makemap.sh* has an additional option to set the model environment name that will be specified in the produced *heightmap.yml* file:
+The **makemap.sh** has an additional option to set the model environment name that will be specified in the produced **heightmap.yml** file:
 
 
 | Option | Description                      |

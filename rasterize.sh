@@ -11,7 +11,7 @@
 ################################
 
 # Flag to indicate if tmp files should be deleted at the end of the script.
-DELETE_TMP_FILES=false
+DELETE_TMP_FILES=true
 
 # Target sizes for height map and diffusion map image file outputs.
 DEFAULT_SIZE_HEIGHT_MAP=512

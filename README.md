@@ -1,5 +1,7 @@
 # xyzRGB Pointcloud Rasterizer
-This project contains scripts that automate the process of producing height and diffusion maps. The scripts were developed for Ubuntu but will most likely work in other Unix-based operating systems. with a few adjustements.
+This project contains scripts that automate the process of producing height and diffusion maps from a pointcloud file. The scripts were developed for Ubuntu but will most likely work in other Unix-based operating systems. with a few adjustements.
+
+**WARNING:** The scripts can be extremely resource intensive depending on the size of the given pointcloud file. The **rasterize.sh** script is not fully optimized in that it creates temporary *.laz* and *.tif* files with a total size that is approximately double that of the given pointcloud file. Make sure that the necessary disk space is available when processing gigabyte-sized pointcloud files.
 
 ## Dependencies
 Third party applications are invoked throughout the **rasterize.sh:** bash script. The mentioned versions are those used while the script was developed:

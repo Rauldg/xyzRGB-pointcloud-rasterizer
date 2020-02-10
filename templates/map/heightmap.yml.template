@@ -33,7 +33,7 @@ materiallist:
     useWorldTexCoords: true
     textures:
       - {file: heightmap.png, name: terrainMap, unit: 3}
-      - {file: diffusionmap.png, name: stones, unit: 5}
+      - {file: diffusion.png, name: stones, unit: 5}
     shader:
      provider: DRockGraph
      vertex: vertex_shader.yml

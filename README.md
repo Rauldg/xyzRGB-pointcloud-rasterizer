@@ -87,7 +87,7 @@ This script produces the files that are part of a model environment project for 
 - vertex\_shader.yml
 - ground.bobj
 
-The script will invoke **rasterize.sh** if it has not already been done for the given pointcloud file. This is determined by checking if the *heightmap.png*, *diffusion.png*, and *bbox.json* files already exist. Overwriting already existing *heightmap.png* and *diffusion.png* files might be desired if different sizes for those files are required. In this case, simply delete at least one of the three files — *heightmap.png*, *diffusion.png*, or *bbox.json* — so that **rasterize.sh** will be invoked when running **rasterize.sh**.
+The script will invoke **rasterize.sh** if it has not already been done for the given pointcloud file. This is determined by checking if the *heightmap.png*, *diffusion.png*, and *bbox.json* files already exist. Overwriting already existing *heightmap.png* and *diffusion.png* files might be desired if different sizes for those files are required. In this case, simply delete at least one of the three files — *heightmap.png*, *diffusion.png*, or *bbox.json* — so that **rasterize.sh** will be invoked when running **makemap.sh**.
 
 #### Examples
 Create MARS map files with default parameters:

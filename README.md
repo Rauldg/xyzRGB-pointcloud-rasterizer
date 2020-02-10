@@ -1,7 +1,5 @@
 # xyzRGB Pointcloud Rasterizer
-This project contains two bash scripts:
-- **rasterize.sh:** Rasterizes xyzRGB pointcloud files into height and diffusion map files.
-- **makemap.sh:** Create files for a 3D model environment that can be loaded into the [MARS](https://github.com/rock-simulation/mars) simulator.
+This project contains scripts that automate the process of producing height and diffusion maps. The scripts were developed for Ubuntu but will most likely work in other Unix-based operating systems. with a few adjustements.
 
 ## Dependencies
 Third party applications are invoked throughout the **rasterize.sh:** bash script. The mentioned versions are those used while the script was developed:
@@ -12,7 +10,7 @@ Third party applications are invoked throughout the **rasterize.sh:** bash scrip
 - [python-gdal](https://launchpad.net/ubuntu/bionic/+package/python-gdal)
 - [ImageMagick](https://imagemagick.org/index.php) 6.9.7-4 Q16 x86_64 20170114
 
-In Ubuntu the latest version of these third party applications can be installed as follow:
+In Ubuntu, the latest version of these third party applications can be installed as follow:
 
     sudo apt install liblas-bin
     sudo apt install pdal
@@ -21,8 +19,12 @@ In Ubuntu the latest version of these third party applications can be installed 
     sudo apt install imagemagick
 
 ## Scripts
+This project contains two bash scripts:
+- **rasterize.sh:** Rasterizes xyzRGB pointcloud files into height and diffusion map files.
+- **makemap.sh:** Create files for a 3D model environment that can be loaded into the [MARS](https://github.com/rock-simulation/mars) simulator.
 
-### Common Options
+### Options
+Both scripts share the following options:
 
 | Option | Description        | Default value |
 |--------|--------------------|---------------|
@@ -40,17 +42,29 @@ Regarding the PDAL options:
 
 Read more about PDAL options [here](https://pdal.io/stages/writers.gdal.html#options).
 
+The *makemap.sh* has an additional option to set the model environment name that will be specified in the produced *heightmap.yml* file:
+
+
+| Option | Description                      |
+|--------|----------------------------------|
+| -n     | Name of the model environment    |
+
+
+The given map name must not include whitespaces.
+
 ### rasterize.sh
 This script produces two image files and a json file with the pointcloud's bounding box information:
- - heightmap.map
- - diffusionmap.png
- - bbox.json
+- heightmap.map
+- diffusionmap.png
+- bbox.json
 
 #### Examples
 Create height map and diffusion map image files with default parameters:
+
     bash rasterize.sh -i pointcloud.xyz
 
 Create 1024x1204px height map file and 3600x3600px diffusion map file:
+
     bash rasterize.sh -i pointcloud.xyz -h 1024 -d 3600
 
 ### makemap.sh
@@ -64,22 +78,14 @@ This script produces the files that are part of a model environment project for 
 
 The script will invoke **rasterize.sh** if it has not been done before for the given pointcloud file.
 
-#### Additional Option
-This script needs an additional option for the model environment name that will be specified in the produced *heightmap.yml* file.
-
-| Option | Description                      |
-|--------|----------------------------------|
-| -n     | Name of the model environment    |
-
-The given map name must not include whitespaces.
-
 #### Examples
 Create MARS map files with default parameters:
-    bash makemap.sh -n -i pointcloud.xyz
+
+    bash makemap.sh -n my_map_name -i pointcloud.xyz
 
 Create MARS map files with a 1024x1204px height map file and 3600x3600px diffusion map:
-    bash rasterize.sh -i pointcloud.xyz -h 1024 -d 3600
 
+    bash rasterize.sh -i pointcloud.xyz -h 1024 -d 3600
 
 ### Possible Errors
 - **Memory:** Invoking PDAL can throw a *malloc* error when too low of a value is set for the resolution option. To resolve this, decrease the target resolution by increasing the value of this option (e.g. use the `-r` option to set it to 0.04 instead of the default 0.05).

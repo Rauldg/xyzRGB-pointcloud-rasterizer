@@ -21,6 +21,10 @@ DEFAULT_SIZE_DIFFUSION_MAP=4096
 DIR_TMP=tmp
 DIR_OUTPUT=output
 
+# How much above the ground level, i.e. along the Z axis,
+# do we want the heightmap origin coordinates to be set to.
+Z_SHIFT=1
+
 # Default PDAL pipeline configurations
 PDAL_DEFAULT_RESOLUTION=0.05
 PDAL_DEFAULT_OUTPUT_TYPE="mean"
@@ -222,18 +226,52 @@ gdal_translate -of PNG -ot Byte -scale -b 1 -b 2 -b 3 -outsize $diffusionmap_out
 printf "Rescaling diffusion map canvas to ${size_diffusion_map}, ${size_diffusion_map}...\n"
 convert $diffusionmap_filename -resize "${size_diffusion_map}x${size_diffusion_map}" -background Black -gravity center -extent "${size_diffusion_map}x${size_diffusion_map}" $diffusionmap_filename
 
+##########################################################
+# FETCH AND SAVE BOUNDING BOX AND CENTER COORDINATE DATA #
+##########################################################
 
-####################################
-# FETCH AND SAVE BOUNDING BOX DATA #
-####################################
+# Use PDAL to get bounding box json.
+bbox_json=$(pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox')
 
-pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox' > "$target_output_dir/bbox.json"
+# Width.
+maxx=$(echo $bbox_json | jq .maxx)
+minx=$(echo $bbox_json | jq .minx)
+dim_width=$(bc <<< "scale=2; $maxx - $minx")
 
+# Height.
+maxy=$(echo $bbox_json | jq .maxy)
+miny=$(echo $bbox_json | jq .miny)
+dim_height=$(bc <<< "scale=2; $maxy - $miny")
+
+# Depth.
+maxz=$(echo $bbox_json | jq .maxz)
+minz=$(echo $bbox_json | jq .minz)
+dim_depth=$(bc <<< "scale=2; $maxz - $minz")
+
+# Center coordinates.
+coord_center_x=$(bc <<< "scale=2; $minx + $dim_width/2")
+coord_center_y=$(bc <<< "scale=2; $miny + $dim_height/2")
+coord_center_z=$(bc <<< "scale=2; $minz + $dim_depth/2")
+
+# Determine z position above ground level.
+# Fetch it by quering for nearest point near the center coordinate...
+z_center_ground_level=$(pdal info -i "$target_tmp_dir/pointcloud.laz" --query "$coord_center_x, $coord_center_y, $coord_center_z/1" | jq '.["unnamed"]["0"]["Z"]')
+
+# ...and apply Z axis shift that was set at the begining of this script.
+position_z=$(bc <<< "scale=10; -($z_center_ground_level - $minz + $Z_SHIFT)")
+
+# Include new values into the bounding box json and update the json file.
+echo $bbox_json | jq --arg w $dim_width '. + {width: $w | tonumber}' | \
+    jq --arg h $dim_height '. + {height: $h | tonumber}' | \
+    jq --arg d $dim_depth '. + {depth: $d | tonumber}' | \
+    jq --arg z $position_z '. + {posz: $z | tonumber}' | \
+    jq --arg cx $coord_center_x '. + {centerx: $cx | tonumber}'| \
+    jq --arg cy $coord_center_y '. + {centery: $cy | tonumber}'| \
+    jq --arg cz $coord_center_z '. + {centerz: $cz | tonumber}' > "$target_output_dir/bbox.json"
 
 ###########
 # CLEANUP #
 ###########
-
 # Delete all the temporary files created by the script.
 if [ $DELETE_TMP_FILES = true ] ; then
     if [ -d $target_tmp_dir ]; then rm -Rf $target_tmp_dir; fi

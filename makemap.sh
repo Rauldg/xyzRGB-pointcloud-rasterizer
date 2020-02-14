@@ -5,6 +5,7 @@
 # Dependencies: None.
 #======================================================================================================
 
+
 # Delete any temporary files that might have been left over from running rasterize.sh.
 DELETE_TMP_FILES=true
 
@@ -12,7 +13,6 @@ DELETE_TMP_FILES=true
 DIR_TMP=tmp
 DIR_OUTPUT=output
 DIR_TEMPLATES=templates/map
-
 
 #########################
 # READ INPUT PARAMETERS #
@@ -104,26 +104,13 @@ fi
 # Fetch bounding box data stored in json file and calculate width, height, and depth.
 bbox_json=$(cat "$target_output_dir/bbox.json" | jq .)
 
-# Width.
-maxx=$(echo $bbox_json | jq .maxx)
-minx=$(echo $bbox_json | jq .minx)
-width=$(bc <<< "scale=2; $maxx - $minx")
 
-# Height.
-maxy=$(echo $bbox_json | jq .maxy)
-miny=$(echo $bbox_json | jq .miny)
-height=$(bc <<< "scale=2; $maxy - $miny")
+# Get dimensions.
+width=$(echo $bbox_json | jq .width)
+height=$(echo $bbox_json | jq .height)
+depth=$(echo $bbox_json | jq .depth)
 
-# Depth.
-maxz=$(echo $bbox_json | jq .maxz)
-minz=$(echo $bbox_json | jq .minz)
-depth=$(bc <<< "scale=2; $maxz - $minz")
-
-# Center coordinates.
-coord_center_x=$(bc <<< "scale=2; $minx + $width/2")
-coord_center_y=$(bc <<< "scale=2; $miny + $height/2")
-coord_center_z=$(bc <<< "scale=2; $minz + $depth/2")
-
+# Get longest edge (width or height).
 if (( $(echo "$width > $height" | bc -l) )); then
     longest_side=$width
 else
@@ -133,6 +120,14 @@ fi
 # Calculate tex scale.
 tex_scale=$(bc <<< "scale=10; 1 / $longest_side")
 tex_scale="0$tex_scale"
+
+# Get center coordinates.
+coord_center_x=$(echo $bbox_json | jq .centerx)
+coord_center_y=$(echo $bbox_json | jq .centery)
+coord_center_z=$(echo $bbox_json | jq .centerz)
+
+# Get shifted z position for model environment origin.
+position_z=$(echo $bbox_json | jq .posz)
 
 #################################################
 # CREATE MODEL ENVIRONMENT FILES FROM TEMPLATES #
@@ -153,7 +148,7 @@ sed "s/{BOUNDING_BOX_X}/$width/g" "$DIR_TEMPLATES/README.md.template" \
 
 # Create heightmap.yml from template.
 sed "s/{MAP_NAME}/$map_name/g" "$DIR_TEMPLATES/heightmap.yml.template" \
-    | sed "s/{POSITION_Z}/0/g" \
+    | sed "s/{POSITION_Z}/$position_z/g" \
     | sed "s/{WIDTH}/$longest_side/g" \
     | sed "s/{HEIGHT}/$longest_side/g" \
     | sed "s/{SCALE}/$depth/g" \

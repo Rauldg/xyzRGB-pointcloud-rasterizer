@@ -8,7 +8,7 @@ The scripts can be extremely resource intensive depending on the size of the giv
 The **rasterize.sh** script is not fully optimized in that it creates temporary *.laz* and *.tif* files with a total size that is approximately double that of the given pointcloud file. Make sure that the necessary disk space is available when processing gigabyte-sized pointcloud files.
 
 ### Memory
-The **rasterize.sh** uses [PDAL](https://pdal.io/) which can be resource intensive with memory allocations and result in a malloc error. This can be mitigating against by reducing the target output size of the diffusion map image.
+The **rasterize.sh** script uses [PDAL](https://pdal.io/) which can be resource intensive with memory allocations and result in a malloc error. This can be mitigating against by reducing the target output size of the diffusion map image.
 
 ## Dependencies
 Third party applications are invoked throughout the **rasterize.sh** bash script. The mentioned versions are those used while the script was developed:

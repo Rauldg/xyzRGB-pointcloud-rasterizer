@@ -219,7 +219,7 @@ gdal_merge.py -separate $target_tmp_dir/red.tif $target_tmp_dir/green.tif $targe
 gdal_translate -of PNG -ot Byte -scale -b 1 -b 2 -b 3 -outsize $diffusionmap_outsize $target_tmp_dir/rgb.tif $diffusionmap_filename
 
 # Use ImageMagick to rescale canvas size to size_diffusion_map x size_diffusion_map pixels.
-printf "Rescaling heightmap canvas to ${size_diffusion_map}, ${size_diffusion_map}...\n"
+printf "Rescaling diffusion map canvas to ${size_diffusion_map}, ${size_diffusion_map}...\n"
 convert $diffusionmap_filename -resize "${size_diffusion_map}x${size_diffusion_map}" -background Black -gravity center -extent "${size_diffusion_map}x${size_diffusion_map}" $diffusionmap_filename
 
 

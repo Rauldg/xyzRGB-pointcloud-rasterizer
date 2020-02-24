@@ -27,7 +27,7 @@ In Ubuntu, the latest version of these third party applications can be installed
     sudo apt install gdal-bin
     sudo apt install python-gdal
     sudo apt install imagemagick
-    sudo apt-get install jq
+    sudo apt install jq
 
 ## Scripts
 This project contains two bash scripts:

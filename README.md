@@ -18,6 +18,7 @@ Third party applications are invoked throughout the **rasterize.sh** bash script
 - [GDAL](https://gdal.org/) 2.2.3, released 2017/11/20
 - [python-gdal](https://launchpad.net/ubuntu/bionic/+package/python-gdal)
 - [ImageMagick](https://imagemagick.org/index.php) 6.9.7-4 Q16 x86_64 20170114
+- [jq](https://stedolan.github.io/jq/) 1.5
 
 In Ubuntu, the latest version of these third party applications can be installed as follow:
 
@@ -26,6 +27,7 @@ In Ubuntu, the latest version of these third party applications can be installed
     sudo apt install gdal-bin
     sudo apt install python-gdal
     sudo apt install imagemagick
+    sudo apt-get install jq
 
 ## Scripts
 This project contains two bash scripts:

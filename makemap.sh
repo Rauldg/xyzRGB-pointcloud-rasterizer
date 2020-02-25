@@ -64,39 +64,31 @@ target_output_dir="$DIR_OUTPUT/$filename"
 
 # Check if options are set to blank.
 # Build the rasterize.sh option substrings that will be used to construct the bash script invokation string.
-if [ -z "$xyz_filename" ]
+cmd_options=""
+
+if [ ! -z $xyz_filename ]
 then
-    xyz_filename=""
-else
-    xyz_filename="-i $xyz_filename"
+    cmd_options="$cmd_options -i $xyz_filename"
 fi
 
-if [ -z "$size_height_map" ]
+if [ ! -z $size_height_map ]
 then
-    size_height_map=""
-else
-    size_height_map="-h $size_height_map"
+    cmd_options="$cmd_options -h $size_height_map"
 fi
 
-if [ -z "$size_diffusion_map" ]
+if [ ! -z $size_diffusion_map ]
 then
-    size_diffusion_map=""
-else
-    size_diffusion_map="-d $size_diffusion_map"
+    cmd_options="$cmd_options -d $size_diffusion_map"
 fi
 
-if [ -z "$pdal_resolution" ]
+if [ ! -z $pdal_resolution ]
 then
-    pdal_resolution=""
-else
-    pdal_resolution="-r $pdal_resolution"
+    cmd_options="$cmd_options -r $pdal_resolution"
 fi
 
-if [ -z "$pdal_output_type" ]
+if [ ! -z $pdal_output_type ]
 then
-    pdal_output_type=""
-else
-    pdal_output_type="-t $pdal_output_type"
+    cmd_options="$cmd_options -t $pdal_output_type"
 fi
 
 # Check if height and diffisusion map files have already been created.
@@ -108,17 +100,18 @@ if [ $overwrite = true ] || [ ! -f "$DIR_OUTPUT/$filename/heightmap.png" ] || [ 
         rm $target_output_dir/*
     fi
 
-    bash rasterize.sh $size_height_map $size_diffusion_map $pdal_resolution $pdal_output_type $xyz_filename
+    echo "Rasterizing..."
+    $(bash rasterize.sh $cmd_options > /dev/null 2>&1)
 fi
 
 
 ######################################
 # BOUNDING BOX AND COORDINATE VALUES #
 ######################################
+echo "Extracting bounding box information..."
 
 # Fetch bounding box data stored in json file and calculate width, height, and depth.
 bbox_json=$(cat "$target_output_dir/bbox.json" | jq .)
-
 
 # Get dimensions.
 width=$(echo $bbox_json | jq .width)
@@ -147,6 +140,7 @@ position_z=$(echo $bbox_json | jq .posz)
 #################################################
 # CREATE MODEL ENVIRONMENT FILES FROM TEMPLATES #
 #################################################
+echo "Creating model environment files..."
 
 # Create README from template.
 sed "s/{BOUNDING_BOX_X}/$width/g" "$DIR_TEMPLATES/README.md.template" \
@@ -197,3 +191,5 @@ if [ $DELETE_TMP_FILES = true ] ; then
     if [ -f "$target_output_dir/heightmap.png.aux.xml" ]; then rm $target_output_dir/heightmap.png.aux.xml; fi
     if [ -f "$target_output_dir/diffusion.png.aux.xml" ]; then rm $target_output_dir/diffusion.png.aux.xml; fi
 fi
+
+echo "All done."

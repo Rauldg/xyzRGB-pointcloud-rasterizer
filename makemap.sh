@@ -14,10 +14,13 @@ DIR_TMP=tmp
 DIR_OUTPUT=output
 DIR_TEMPLATES=templates/map
 
+# By default, don't overwrite existing rasterize files.
+overwrite=false
+
 #########################
 # READ INPUT PARAMETERS #
 #########################
-while getopts ":n:h:d:r:t:i:" opt; do
+while getopts ":n:h:d:r:t:i:o" opt; do
   case $opt in
     n) map_name="$OPTARG"
     ;;
@@ -30,6 +33,8 @@ while getopts ":n:h:d:r:t:i:" opt; do
     t) pdal_output_type="$OPTARG"
     ;;
     i) xyz_filename="$OPTARG"
+    ;;
+    o) overwrite=true
     ;;
     \?) printf "\nInvalid option -$OPTARG\n\n" >&2
     exit 1
@@ -92,7 +97,13 @@ fi
 
 # Check if height and diffisusion map files have already been created.
 # If not, create them by invoking the rasterize.sh bash script.
-if [ ! -f "$DIR_OUTPUT/$filename/heightmap.png" ] || [ ! -f "$DIR_OUTPUT/$filename/diffusion.png" ] || [ ! -f "$DIR_OUTPUT/$filename/bbox.json" ] ; then
+# If they already exist but overwrite is set to true then invoke rasterize.sh anyway.
+if [ $overwrite = true ] || [ ! -f "$DIR_OUTPUT/$filename/heightmap.png" ] || [ ! -f "$DIR_OUTPUT/$filename/diffusion.png" ] || [ ! -f "$DIR_OUTPUT/$filename/bbox.json" ] ; then
+    # Delete output files that may still remain from a previous script execution.
+    if [ "$(find "$target_output_dir" -mindepth 1 -print -quit 2>/dev/null)" ]; then
+        rm $target_output_dir/*
+    fi
+
     bash rasterize.sh $size_height_map $size_diffusion_map $pdal_resolution $pdal_output_type $xyz_filename
 fi
 

@@ -58,6 +58,9 @@ while getopts ":h:d:r:t:i:" opt; do
   esac
 done
 
+# Verbosity.
+verbose=true
+
 # Check if input pointcloud filename was given.
 if [ -z "$xyz_filename" ]
 then
@@ -87,6 +90,17 @@ fi
 if [ -z "$pdal_output_type" ]
 then
     pdal_output_type=$PDAL_DEFAULT_OUTPUT_TYPE
+fi
+
+# Verbosity
+if [ $verbose = true ] ; then
+    echo ""
+    echo "Rasterizing with the following parameters: "
+    echo "  Heightmap size: $size_height_map"
+    echo "  Diffusion map size: $size_diffusion_map"
+    echo "  PDAL resolution: $pdal_resolution"
+    echo "  PDAL output type: $pdal_output_type"
+    echo "  Input filename: $xyz_filename"
 fi
 
 
@@ -279,3 +293,5 @@ if [ $DELETE_TMP_FILES = true ] ; then
     # Remove auxiliary files.
     rm $target_output_dir/*.aux.xml
 fi
+
+echo "All done."

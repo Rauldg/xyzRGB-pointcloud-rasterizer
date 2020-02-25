@@ -2,9 +2,13 @@
 #======================================================================================================
 # Name:         makemap.sh
 # Description:  Create files for a 3D model environment that can be loaded into the MARS simulator.
-# Dependencies: None.
+# Dependencies: jq.
 #======================================================================================================
 
+
+################################
+# CONSTANT AND DEFAULT VALUES #
+################################
 
 # Delete any temporary files that might have been left over from running rasterize.sh.
 DELETE_TMP_FILES=true

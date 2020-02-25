@@ -2,7 +2,7 @@
 #======================================================================================================
 # Name:         rasterize.sh
 # Description:  Reads a DSM point cloud file and outputs height and diffusion map image files.
-# Dependencies: LAStools, PDAL, GDAL, python-gdal, and ImageMagick.
+# Dependencies: LAStools, PDAL, GDAL, python-gdal, ImageMagick, and jq.
 #======================================================================================================
 
 
@@ -203,6 +203,8 @@ fi
 
 # Verbosity.
 printf "Creating grayscale heightmap...\n"
+
+echo "gdal_translate -of PNG -ot Byte -scale -b 1 -outsize $heightmap_outsize "$target_tmp_dir/dtm.tif" $heightmap_filename"
 
 # Use GDAL to create grayscale heightmap file.
 gdal_translate -of PNG -ot Byte -scale -b 1 -outsize $heightmap_outsize "$target_tmp_dir/dtm.tif" $heightmap_filename

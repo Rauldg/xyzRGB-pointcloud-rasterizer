@@ -49,9 +49,10 @@ Although not enforced, the diffusion map size should be a power of 2 when produc
 
 The **makemap.sh** has an additional option to set the model environment name that will be specified in the produced **heightmap.yml** file:
 
-| Option | Description                      |
-|--------|----------------------------------|
-| -n     | Name of the model environment    |
+| Option | Description                          |
+|--------|--------------------------------------|
+| -n     | Name of the model environment        |
+| -o     | Overwrite previously created rasters |
 
 
 The given map name must not include whitespaces.
@@ -62,6 +63,8 @@ The height map or diffusion map sizes can be set to a greater value than the max
 #### PDAL Options
 - **PDAL resolution:** The length of raster cell edges in X/Y units. The smaller this value the higher the resolution.
 - **PDAL output type:** The raster layer to be produced. The supported values are *min*, *max*, *mean*, *idw*, *count*, and *stdev*. There is no error checking implemented for unsupported values.
+
+The default PDAL resolution of 0.05 is set through trial and error based on testing with 4cm resolution pointcloud files and the PDAL processing memory constraints. If lower resolution pointcloud files are inputted then the PDAL resolution value must be increased. Not doing so will result in heightmap and diffusion map image files with transparent patches in between texture pixels. By way of example, a PDAL resolution of 0.14 is the smallest value that can be set for a 25cm resolution pointcloud so that the resulting image files not miss any texture pixels.
 
 Read more about PDAL options [here](https://pdal.io/stages/writers.gdal.html#options).
 
@@ -96,9 +99,9 @@ Create MARS map files with default parameters:
 
     bash makemap.sh -n my_map_name -i pointcloud.xyz
 
-Create MARS map files with a 1024x1204px height map file and 3600x3600px diffusion map:
+Create MARS map files with a 1024x1204px height map file, a 3600x3600px diffusion map, and overwrite any previously created raster files:
 
-    bash makemap.sh -n my_map_name -i pointcloud.xyz -h 1024 -d 3600
+    bash makemap.sh -n my_map_name -i pointcloud.xyz -h 1024 -d 3600 -o
 
 ### Possible Errors
 - **Memory:** Invoking PDAL can throw a *malloc* error when too low of a value is set for the resolution option. To resolve this, decrease the target resolution by increasing the value of this option (e.g. use the `-r` option to set it to 0.04 instead of the default 0.05).

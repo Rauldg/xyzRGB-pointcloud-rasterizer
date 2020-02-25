@@ -64,7 +64,7 @@ The height map or diffusion map sizes can be set to a greater value than the max
 - **PDAL resolution:** The length of raster cell edges in X/Y units. The smaller this value the higher the resolution.
 - **PDAL output type:** The raster layer to be produced. The supported values are *min*, *max*, *mean*, *idw*, *count*, and *stdev*. There is no error checking implemented for unsupported values.
 
-The default PDAL resolution of 0.05 is set through trial and error based on testing with 4cm resolution pointcloud files and the PDAL processing memory constraints. If lower resolution pointcloud files are inputted then the PDAL resolution value must be increased. Not doing so will result in heightmap and diffusion map image files with transparent patches in between texture pixels. By way of example, a PDAL resolution of 0.14 is the smallest value that can be set for a 25cm resolution pointcloud so that the resulting image files not miss any texture pixels.
+The default PDAL resolution of 0.05 is set through trial and error based on testing with 4cm resolution pointcloud files and the PDAL processing memory constraints. If lower resolution pointcloud files are inputted then the PDAL resolution value must be increased. Not doing so will result in heightmap and diffusion map image files with transparent pixel patches where data is missing. By way of example, a PDAL resolution of 0.14 is the smallest value that can be set for a 25cm resolution pointcloud so that the resulting image files not miss any texture pixels.
 
 Read more about PDAL options [here](https://pdal.io/stages/writers.gdal.html#options).
 

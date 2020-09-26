@@ -31,6 +31,7 @@ PDAL_DEFAULT_OUTPUT_TYPE="mean"
 
 # Template PDAL pipeline files.
 PDAL_PIPELINE_DTM=templates/pipelines/dtm.json.template
+PDAL_PIPELINE_TIFF_DTM=templates/pipelines/tiff_dtm.json.template
 PDAL_PIPELINE_RGB=templates/pipelines/rgb.json.template
 
 # Expected dgalinfo string output pattern for size info.
@@ -40,7 +41,7 @@ REGEX_SIZE=".*Size is ([0-9]+), ([0-9]+).*"
 #########################
 # READ INPUT PARAMETERS #
 #########################
-while getopts ":h:d:r:t:i:" opt; do
+while getopts ":h:d:r:t:i:f:" opt; do
   case $opt in
     h) size_height_map="$OPTARG"
     ;;
@@ -52,6 +53,8 @@ while getopts ":h:d:r:t:i:" opt; do
     ;;
     i) xyz_filename="$OPTARG"
     ;;
+    f) tiff_filename="$OPTARG"
+    ;;
     \?) printf "\nInvalid option -$OPTARG\n\n" >&2
     exit 1
     ;;
@@ -60,12 +63,20 @@ done
 
 # Verbosity.
 verbose=true
+input_tiff=false
 
 # Check if input pointcloud filename was given.
 if [ -z "$xyz_filename" ]
 then
-    printf "\nUse the -i option to input the path to the .xyz file to process.\n\n"
-    exit 1
+    if [ -z "$tiff_filename"]
+    then
+        printf "\nUse the -i option to input the path to the .xyz file to process.\n\n"
+        printf "\nOr use the -f option to input the path to the .tiff file to process.\n\n"
+        exit 1
+    else
+        printf "\nA tiff will be processed\n\n"
+        input_tiff=true
+    fi
 fi
 
 # Set default height map size if not given as parameter.
@@ -100,7 +111,8 @@ if [ $verbose = true ] ; then
     echo "  Diffusion map size: $size_diffusion_map"
     echo "  PDAL resolution: $pdal_resolution"
     echo "  PDAL output type: $pdal_output_type"
-    echo "  Input filename: $xyz_filename"
+    echo "  Input pcl filename: $xyz_filename"
+    echo "  Input tiff filename: $tiff_filename"
 fi
 
 
@@ -114,9 +126,13 @@ if [ ! -d $DIR_TMP ]; then mkdir $DIR_TMP; fi
 # Create parent output directory if it doesn't exist already.
 if [ ! -d $DIR_OUTPUT ]; then mkdir $DIR_OUTPUT; fi
 
-# Get name of xyz file without its extension.
-# Use this name as the directory name where created files will be outputted to.
-filename=$(basename -- "$xyz_filename")
+if [ $input_tiff = true ]; then
+    # Get name of xyz file without its extension.
+    # Use this name as the directory name where created files will be outputted to.
+    filename=$(basename -- "$tiff_filename")
+else
+    filename=$(basename -- "$xyz_filename")
+fi
 filename="${filename%.*}"
 
 # Define target directories where created files will be saved.
@@ -146,27 +162,41 @@ diffusionmap_filename=$target_output_dir/diffusion.png
 ###################
 # CREATE DTM FILE #
 ###################
+if [ $input_tiff = false ]; then
+    # Use LAStools to parse the xyzRGB pointcloud ASCII format data into a laz format file.
+    printf "\nParsing xyzRGB pointcloud file to LAZ...\n"
 
-# Use LAStools to parse the xyzRGB pointcloud ASCII format data into a laz format file.
-printf "\nParsing xyzRGB pointcloud file to LAZ...\n"
+    # Laz filename needs to match filename in pipeline json templates.
+    txt2las -parse xyzRGB -i $xyz_filename -o $target_tmp_dir/pointcloud.laz
 
-# Laz filename needs to match filename in pipeline json templates.
-txt2las -parse xyzRGB -i $xyz_filename -o $target_tmp_dir/pointcloud.laz
+    # Create the GTiff DTM file...
+    printf "Creating GTiff DTM...\n"
 
-# Create the GTiff DTM file...
-printf "Creating GTiff DTM...\n"
+    # PDAL pipeline definition filename.
+    dtm_pipeline_filename=$target_tmp_dir/dtm.json
 
-# PDAL pipeline definition filename.
-dtm_pipeline_filename=$target_tmp_dir/dtm.json
+    # Create the DTM pipeline JSON file.
+    sed "s/{RESOLUTION}/$pdal_resolution/g" $PDAL_PIPELINE_DTM | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{TMP_DIR}/${target_tmp_dir/\//\\\/}/g" > $dtm_pipeline_filename
 
-# Create the DTM pipeline JSON file.
-sed "s/{RESOLUTION}/$pdal_resolution/g" $PDAL_PIPELINE_DTM | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{TMP_DIR}/${target_tmp_dir/\//\\\/}/g" > $dtm_pipeline_filename
+    # Use PDAL to create the GTiff DTM file.
+    pdal pipeline $dtm_pipeline_filename
 
-# Use PDAL to create the GTiff DTM file.
-pdal pipeline $dtm_pipeline_filename
+    # Use GDAL to fetch the size of the DTM.
+    gdalinfo_stdout="$(gdalinfo "$target_tmp_dir/dtm.tif" 2>&1)"
+else
+    # Copy the tiff to where is searched by the pipeline.
+    cp $tiff_filename $target_tmp_dir/dtm.tif
+    ## PDAL pipeline definition filename.
+    #dtm_pipeline_filename=$target_tmp_dir/tiff_dtm.json
+    ## Create the DTM pipeline JSON file.
+    #sed "s/{RESOLUTION}/$pdal_resolution/g" $PDAL_PIPELINE_TIFF_DTM | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{OUTPUT_TYPE}/$pdal_output_type/g" | sed "s/{TMP_DIR}/${target_tmp_dir/\//\\\/}/g" > $dtm_pipeline_filename
+    ## Use PDAL to process the initial geotiff into the GTiff DTM file. # I think this is not needed
+    #gdal pipeline $dtm_pipeline_filename
+    ## Use GDAL to fetch the size of the DTM.
+    #gdalinfo_stdout="$(gdalinfo "$target_tmp_dir/dtm.tif" 2>&1)" #--> Fails: PDAL: Cannot determine reader for input file: tmp/2019-10-24-44-Trajectory-10mm-AgainstSun_Ortho_projection_High_Quality/geotiff.tif
 
-# Use GDAL to fetch the size of the DTM.
-gdalinfo_stdout="$(gdalinfo "$target_tmp_dir/dtm.tif" 2>&1)"
+    #printf "Created Gtiff DTM...\n"
+fi
 
 
 ##################
@@ -247,43 +277,44 @@ convert $diffusionmap_filename -resize "${size_diffusion_map}x${size_diffusion_m
 ##########################################################
 
 # Use PDAL to get bounding box json.
-bbox_json=$(pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox')
+if [ $input_tiff = false ]; then
+    bbox_json=$(pdal info -i "$target_tmp_dir/pointcloud.laz" | jq -r '.stats.bbox.native.bbox')
+    # Width.
+    maxx=$(echo $bbox_json | jq .maxx)
+    minx=$(echo $bbox_json | jq .minx)
+    dim_width=$(bc <<< "scale=2; $maxx - $minx")
 
-# Width.
-maxx=$(echo $bbox_json | jq .maxx)
-minx=$(echo $bbox_json | jq .minx)
-dim_width=$(bc <<< "scale=2; $maxx - $minx")
+    # Height.
+    maxy=$(echo $bbox_json | jq .maxy)
+    miny=$(echo $bbox_json | jq .miny)
+    dim_height=$(bc <<< "scale=2; $maxy - $miny")
 
-# Height.
-maxy=$(echo $bbox_json | jq .maxy)
-miny=$(echo $bbox_json | jq .miny)
-dim_height=$(bc <<< "scale=2; $maxy - $miny")
+    # Depth.
+    maxz=$(echo $bbox_json | jq .maxz)
+    minz=$(echo $bbox_json | jq .minz)
+    dim_depth=$(bc <<< "scale=2; $maxz - $minz")
 
-# Depth.
-maxz=$(echo $bbox_json | jq .maxz)
-minz=$(echo $bbox_json | jq .minz)
-dim_depth=$(bc <<< "scale=2; $maxz - $minz")
+    # Center coordinates.
+    coord_center_x=$(bc <<< "scale=2; $minx + $dim_width/2")
+    coord_center_y=$(bc <<< "scale=2; $miny + $dim_height/2")
+    coord_center_z=$(bc <<< "scale=2; $minz + $dim_depth/2")
 
-# Center coordinates.
-coord_center_x=$(bc <<< "scale=2; $minx + $dim_width/2")
-coord_center_y=$(bc <<< "scale=2; $miny + $dim_height/2")
-coord_center_z=$(bc <<< "scale=2; $minz + $dim_depth/2")
+    # Determine z position above ground level.
+    # Fetch it by quering for nearest point near the center coordinate...
+    z_center_ground_level=$(pdal info -i "$target_tmp_dir/pointcloud.laz" --query "$coord_center_x, $coord_center_y, $coord_center_z/1" | jq '.["unnamed"]["0"]["Z"]')
 
-# Determine z position above ground level.
-# Fetch it by quering for nearest point near the center coordinate...
-z_center_ground_level=$(pdal info -i "$target_tmp_dir/pointcloud.laz" --query "$coord_center_x, $coord_center_y, $coord_center_z/1" | jq '.["unnamed"]["0"]["Z"]')
+    # ...and apply Z axis shift that was set at the begining of this script.
+    position_z=$(bc <<< "scale=10; -($z_center_ground_level - $minz + $Z_SHIFT)")
 
-# ...and apply Z axis shift that was set at the begining of this script.
-position_z=$(bc <<< "scale=10; -($z_center_ground_level - $minz + $Z_SHIFT)")
-
-# Include new values into the bounding box json and update the json file.
-echo $bbox_json | jq --arg w $dim_width '. + {width: $w | tonumber}' | \
-    jq --arg h $dim_height '. + {height: $h | tonumber}' | \
-    jq --arg d $dim_depth '. + {depth: $d | tonumber}' | \
-    jq --arg z $position_z '. + {posz: $z | tonumber}' | \
-    jq --arg cx $coord_center_x '. + {centerx: $cx | tonumber}'| \
-    jq --arg cy $coord_center_y '. + {centery: $cy | tonumber}'| \
-    jq --arg cz $coord_center_z '. + {centerz: $cz | tonumber}' > "$target_output_dir/bbox.json"
+    # Include new values into the bounding box json and update the json file.
+    echo $bbox_json | jq --arg w $dim_width '. + {width: $w | tonumber}' | \
+        jq --arg h $dim_height '. + {height: $h | tonumber}' | \
+        jq --arg d $dim_depth '. + {depth: $d | tonumber}' | \
+        jq --arg z $position_z '. + {posz: $z | tonumber}' | \
+        jq --arg cx $coord_center_x '. + {centerx: $cx | tonumber}'| \
+        jq --arg cy $coord_center_y '. + {centery: $cy | tonumber}'| \
+        jq --arg cz $coord_center_z '. + {centerz: $cz | tonumber}' > "$target_output_dir/bbox.json"
+fi
 
 ###########
 # CLEANUP #
